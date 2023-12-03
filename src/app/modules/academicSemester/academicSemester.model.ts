@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import { TAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemesterCode, AcademicSemesterName, Months } from "./academicSemester.constant";
 import { AppError } from "../../error/appEror";
+import httpStatus from "http-status";
 
 const academicSemesterSchema = new Schema<TAcademicSemester>({
   name: {type: String, enum: AcademicSemesterName, required: true},
