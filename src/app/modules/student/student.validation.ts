@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const userNameValidationSchema = z.object({
+const createUserNameValidationSchema = z.object({
   firstName: z.string()
     .trim()
     .min(1, { message: 'First name must be at least 1 character long' })
@@ -10,9 +10,19 @@ const userNameValidationSchema = z.object({
     .trim()
     .min(1, { message: 'Last name must be at least 1 character long' }),
 });
+const updateUserNameValidationSchema = z.object({
+  firstName: z.string()
+    .trim()
+    .min(1, { message: 'First name must be at least 1 character long' })
+    .max(20, { message: 'First name cannot be longer than 20 characters' }).optional(),
+  middleName: z.string().trim().optional().optional(),
+  lastName: z.string()
+    .trim()
+    .min(1, { message: 'Last name must be at least 1 character long' }).optional(),
+});
 
 // Define Zod schema for Guardian
-const guardianValidationSchema = z.object({
+const createGuardianValidationSchema = z.object({
   fatherName: z.string().min(1, { message: "Father's name must be at least 1 character long" }),
   fatherOccupation: z.string().min(1, { message: "Father's occupation must be at least 1 character long" }),
   fatherContactNo: z.string().trim().min(1, { message: "Father's contact number must be at least 1 character long" }),
@@ -20,13 +30,27 @@ const guardianValidationSchema = z.object({
   motherOccupation: z.string().min(1, { message: "Mother's occupation must be at least 1 character long" }),
   motherContactNo: z.string().trim().min(1, { message: "Mother's contact number must be at least 1 character long" }),
 });
+const updateGuardianValidationSchema = z.object({
+  fatherName: z.string().min(1, { message: "Father's name must be at least 1 character long" }).optional(),
+  fatherOccupation: z.string().min(1, { message: "Father's occupation must be at least 1 character long" }).optional(),
+  fatherContactNo: z.string().trim().min(1, { message: "Father's contact number must be at least 1 character long" }).optional(),
+  motherName: z.string().min(1, { message: "Mother's name must be at least 1 character long" }).optional(),
+  motherOccupation: z.string().min(1, { message: "Mother's occupation must be at least 1 character long" }).optional(),
+  motherContactNo: z.string().trim().min(1, { message: "Mother's contact number must be at least 1 character long" }).optional(),
+});
 
 // Define Zod schema for LocalGuardian
-const localGuardianValidationSchema = z.object({
+const createLocalGuardianValidationSchema = z.object({
   name: z.string().min(1, { message: 'Local guardian name must be at least 1 character long' }),
   occupation: z.string().min(1, { message: 'Local guardian occupation must be at least 1 character long' }),
   contactNo: z.string().trim().min(1, { message: 'Local guardian contact number must be at least 1 character long' }),
   address: z.string().min(1, { message: 'Local guardian address must be at least 1 character long' }),
+});
+const updateLocalGuardianValidationSchema = z.object({
+  name: z.string().min(1, { message: 'Local guardian name must be at least 1 character long' }).optional(),
+  occupation: z.string().min(1, { message: 'Local guardian occupation must be at least 1 character long' }).optional(),
+  contactNo: z.string().trim().min(1, { message: 'Local guardian contact number must be at least 1 character long' }),
+  address: z.string().min(1, { message: 'Local guardian address must be at least 1 character long' }).optional(),
 });
 
 // Define Zod schema for Student
@@ -34,7 +58,7 @@ const createStudentValidationSchema = z.object({
   body: z.object({
     password: z.string(),
     student: z.object({
-    name: userNameValidationSchema,
+    name: createUserNameValidationSchema,
     gender: z.enum(['male', 'female']),
     dateOfBirth: z.string().optional(),
     email: z.string().email({ message: 'Invalid email format' }),
@@ -43,10 +67,30 @@ const createStudentValidationSchema = z.object({
     bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']).optional(),
     presentAddress: z.string().min(1, { message: 'Present address must be at least 1 character long' }),
     permanentAddress: z.string().min(1, { message: 'Permanent address must be at least 1 character long' }),
-    guardian: guardianValidationSchema,
-    localGuardian: localGuardianValidationSchema,
+    guardian: createGuardianValidationSchema,
+    localGuardian: createLocalGuardianValidationSchema,
     admissionSemester: z.string(),
     profileImg: z.string().optional(),
+
+    })
+  })
+});
+const updateStudentValidationSchema = z.object({
+  body: z.object({
+    student: z.object({
+    name: updateUserNameValidationSchema.optional(),
+    gender: z.enum(['male', 'female']).optional(),
+    dateOfBirth: z.string().optional().optional(),
+    email: z.string().email({ message: 'Invalid email format' }).optional(),
+    contactNo: z.string().min(1, { message: 'Contact number must be at least 1 character long' }).optional(),
+    emergencyContactNo: z.string().trim().min(1, { message: 'Emergency contact number must be at least 1 character long' }).optional(),
+    bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']).optional(),
+    presentAddress: z.string().min(1, { message: 'Present address must be at least 1 character long' }).optional(),
+    permanentAddress: z.string().min(1, { message: 'Permanent address must be at least 1 character long' }).optional(),
+    guardian: updateGuardianValidationSchema.optional(),
+    localGuardian: updateLocalGuardianValidationSchema.optional(),
+    admissionSemester: z.string().optional(),
+    profileImg: z.string().optional().optional(),
 
     })
   })
@@ -54,4 +98,5 @@ const createStudentValidationSchema = z.object({
 
 export const studentValidations = {
   createStudentValidationSchema,
+  updateStudentValidationSchema
 };
