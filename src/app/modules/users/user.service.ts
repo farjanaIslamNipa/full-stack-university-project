@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose";
 import config from "../../config";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
@@ -8,6 +9,8 @@ import { User } from "./user.model";
 import { generateStudentId } from "./user.utils";
 import { AppError } from "../../error/appEror";
 import httpStatus from "http-status";
+import { TFaculty } from "../faculty/faculty.interface";
+import { Faculty } from "../faculty/faculty.model";
 
 
 
@@ -58,7 +61,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
     return newStudent;
 
-  }catch(err){
+  }catch(err: any){
     await session.abortTransaction()
     await session.endSession()
     throw new Error(err)
@@ -66,6 +69,13 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
 };
 
+const createFacultyIntoDB = async(payload: TFaculty) => {
+  const result = await Faculty.create(payload);
+
+  return result;
+}
+
 export const UserService = {
-  createStudentIntoDB
+  createStudentIntoDB,
+  createFacultyIntoDB
 }

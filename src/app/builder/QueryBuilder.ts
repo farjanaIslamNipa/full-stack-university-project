@@ -37,7 +37,7 @@ class QueryBuilder<T> {
   }
 
   sort(){
-    const sort = this?.query?.sort ||  '-cratedAt';
+    const sort = (this?.query?.sort as string)?.split(',').join(' ') ||  '-cratedAt';
     this.modelQuery = this.modelQuery.sort(sort as string);
 
     return this;

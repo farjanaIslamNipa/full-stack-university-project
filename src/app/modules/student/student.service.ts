@@ -4,8 +4,8 @@ import { AppError } from '../../error/appEror';
 import httpStatus from 'http-status';
 import { User } from '../users/user.model';
 import { TStudent } from './student.interface';
-import QueryBuilder from '../../builder/queryBuilder';
 import { studentSearchableFields } from './student.constant';
+import QueryBuilder from '../../builder/QueryBuilder';
 
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
@@ -74,7 +74,15 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 //   return fieldQuery;
 
 
-const studentQuery = new QueryBuilder(Student.find(), query).search(studentSearchableFields).filter().sort().paginate().fields();
+const studentQuery = new QueryBuilder(Student.find()
+                                .populate('admissionSemester')
+                                .populate({
+                                   path: 'academicDepartment',
+                                   populate: {
+                                     path: 'academicFaculty'
+                                   }
+                              }), query).search(studentSearchableFields)
+                              .filter().sort().paginate().fields();
 
 const result = await studentQuery.modelQuery
 
