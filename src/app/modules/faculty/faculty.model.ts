@@ -3,6 +3,12 @@ import { TFaculty } from "./faculty.interface";
 
 const facultySchema = new Schema({
   id: {type: String, required: true, unique: true},
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User id is required'],
+    unique: true,
+    ref: 'User',
+  },
   name: {type: String, required: true},
   gender: {type: String, enum: ['male', 'female', 'other'], required: true},
   dateOfBirth: {type: String, required: true},
