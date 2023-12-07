@@ -75,26 +75,49 @@ const createStudentValidationSchema = z.object({
     })
   })
 });
-const updateStudentValidationSchema = z.object({
+// const updateStudentValidationSchema = z.object({
+//   body: z.object({
+//     student: z.object({
+//       name: updateUserNameValidationSchema,
+//       gender: z.enum(['male', 'female']).optional(),
+//       dateOfBirth: z.string().optional().optional(),
+//       email: z.string().email({ message: 'Invalid email format' }).optional(),
+//       contactNo: z.string().min(1, { message: 'Contact number must be at least 1 character long' }).optional(),
+//       emergencyContactNo: z.string().trim().min(1, { message: 'Emergency contact number must be at least 1 character long' }).optional(),
+//       bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']).optional(),
+//       presentAddress: z.string().min(1, { message: 'Present address must be at least 1 character long' }).optional(),
+//       permanentAddress: z.string().min(1, { message: 'Permanent address must be at least 1 character long' }).optional(),
+//       guardian: updateGuardianValidationSchema,
+//       localGuardian: updateLocalGuardianValidationSchema,
+//       admissionSemester: z.string().optional(),
+//       profileImg: z.string().optional().optional(),
+//     })
+//   })
+// });
+
+export const updateStudentValidationSchema = z.object({
   body: z.object({
     student: z.object({
-    name: updateUserNameValidationSchema.optional(),
-    gender: z.enum(['male', 'female']).optional(),
-    dateOfBirth: z.string().optional().optional(),
-    email: z.string().email({ message: 'Invalid email format' }).optional(),
-    contactNo: z.string().min(1, { message: 'Contact number must be at least 1 character long' }).optional(),
-    emergencyContactNo: z.string().trim().min(1, { message: 'Emergency contact number must be at least 1 character long' }).optional(),
-    bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']).optional(),
-    presentAddress: z.string().min(1, { message: 'Present address must be at least 1 character long' }).optional(),
-    permanentAddress: z.string().min(1, { message: 'Permanent address must be at least 1 character long' }).optional(),
-    guardian: updateGuardianValidationSchema.optional(),
-    localGuardian: updateLocalGuardianValidationSchema.optional(),
-    admissionSemester: z.string().optional(),
-    profileImg: z.string().optional().optional(),
-
-    })
-  })
+      name: updateUserNameValidationSchema,
+      gender: z.enum(['male', 'female', 'other']).optional(),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email().optional(),
+      contactNo: z.string().optional(),
+      emergencyContactNo: z.string().optional(),
+      bloodGroup: z
+        .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+        .optional(),
+      presentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      guardian: updateGuardianValidationSchema.optional(),
+      localGuardian: updateLocalGuardianValidationSchema.optional(),
+      admissionSemester: z.string().optional(),
+      profileImg: z.string().optional(),
+      academicDepartment: z.string().optional(),
+    }),
+  }),
 });
+
 
 export const StudentValidation = {
   createStudentValidationSchema,
