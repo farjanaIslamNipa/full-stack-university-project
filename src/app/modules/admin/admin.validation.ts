@@ -26,7 +26,6 @@ export const createAdminValidationSchema = z.object({
     bloodGroup: z.enum([...BloodGroup] as [string, ...string[]]),
     presentAddress: z.string(),
     permanentAddress: z.string(),
-    academicDepartment: z.string(),
     profileImg: z.string(),
   }),
 });
@@ -50,7 +49,6 @@ export const updateAdminValidationSchema = z.object({
     presentAddress: z.string().optional(),
     permanentAddress: z.string().optional(),
     profileImg: z.string().optional(),
-    academicDepartment: z.string().optional(),
   }),
 });
 
