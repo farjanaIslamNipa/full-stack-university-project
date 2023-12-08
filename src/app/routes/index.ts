@@ -38,6 +38,10 @@ const moduleRoutes = [
     path: '/admins',
     route: AdminRoutes,
   },
+  {
+    path: '/courses',
+    route: AdminRoutes,
+  },
 ]
 
 moduleRoutes.forEach(route => router.use(route.path, route.route))

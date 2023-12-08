@@ -29,7 +29,7 @@ const updateAcademicSemesterIntoDB = async(id: string, payload: Partial<TAcademi
     throw new AppError (httpStatus.NOT_FOUND, 'Invalid academic semester code')
   }
 
-  const result = await AcademicSemester.findOneAndUpdate({_id: id}, payload, {new: true})
+  const result = await AcademicSemester.findByIdAndUpdate(id, payload, {new: true})
   return result;
 }
 

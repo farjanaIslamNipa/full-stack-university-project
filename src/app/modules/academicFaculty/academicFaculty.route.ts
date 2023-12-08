@@ -15,11 +15,11 @@ router.get(
   AcademicFacultyControllers.getAllAcademicFaculties
 )
 router.get(
-  '/:facultyId',
+  '/:id',
   AcademicFacultyControllers.getSingleAcademicFaculty
 )
 router.patch(
-  '/:facultyId',
+  '/:id',
   validateRequest(AcademicFacultyValidation.academicFacultyUpdateValidation),
   AcademicFacultyControllers.updateAcademicFaculty
 )

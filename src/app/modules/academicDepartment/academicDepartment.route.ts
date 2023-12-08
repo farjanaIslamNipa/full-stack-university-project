@@ -1,7 +1,7 @@
 import { Router } from "express";
 import validateRequest from "../../middleware/validateRequest";
 import { AcademicDepartmentValidation } from "./academicDepartment.validation";
-import { AcademicDepartmentControllers } from "./AcademicDepartment.controller";
+import { AcademicDepartmentControllers } from "./academicDepartment.controller";
 
 const router = Router();
 
@@ -17,12 +17,12 @@ router.get(
 )
 
 router.get(
-  '/:departmentId',
+  '/:id',
   AcademicDepartmentControllers.getSingleAcademicDepart
 )
 
 router.patch(
-  '/:departmentId',
+  '/:id',
   validateRequest(AcademicDepartmentValidation.updateAcademicDepartmentValidation),
   AcademicDepartmentControllers.updateAcademicDepartment
 )
