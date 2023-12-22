@@ -21,7 +21,7 @@ router.patch(
   validateRequest(
     SemesterRegistrationValidation.updateSemesterRegistrationValidationSchema
   ),
-  SemesterRegistrationControllers.createSemesterRegistration
+  SemesterRegistrationControllers.updateSemesterRegistration
 )
 
 
