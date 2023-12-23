@@ -56,4 +56,4 @@ const offeredCourseSchema = new Schema<TOfferedCourse>({
   }
 }, {timestamps: true})
 
-export const OfferedCourse = model<TOfferedCourse>('TOfferedCourse', offeredCourseSchema)
+export const OfferedCourse = model<TOfferedCourse>('OfferedCourse', offeredCourseSchema)
