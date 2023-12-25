@@ -2,6 +2,8 @@ import httpStatus from "http-status";
 import {AppError} from "../../error/appEror";
 import {User} from "../users/user.model";
 import {TLoginUser} from "./auth.interface";
+import jwt from 'jsonwebtoken'
+import config from "../../config";
 
 const loginUser = async(payload: TLoginUser) => {
 
@@ -15,7 +17,9 @@ const loginUser = async(payload: TLoginUser) => {
   }
 
   // checking if user is deleted
-  if(await User.isDeletedUser(user.id)){
+  const isDeletedUser  = user?.isDeleted
+
+  if(isDeletedUser){
     throw new AppError(
       httpStatus.FORBIDDEN, 
       'User does not exists'
@@ -23,8 +27,9 @@ const loginUser = async(payload: TLoginUser) => {
   }
 
   // // checking user status
+  const userStatus  = user?.status
 
-  if((await User.userStatus(user.id)) === 'blocked'){
+  if(userStatus === 'blocked'){
     throw new AppError(
       httpStatus.NOT_FOUND, 
       'This user is blocked'
@@ -40,7 +45,17 @@ const loginUser = async(payload: TLoginUser) => {
   }
 
   // Access Granted: send access token and refresh token
+  // create token and send to the client
+  const jwtPayload = {
+    userId: user,
+    role: user.role
+  }
+  const accessToken = jwt.sign( jwtPayload, config.jwt_access_secret as string, { expiresIn: '10d' });
 
+  return {
+    accessToken,
+    needsPasswordChange: user?.needsPasswordChange,
+  }
 
 }
 
