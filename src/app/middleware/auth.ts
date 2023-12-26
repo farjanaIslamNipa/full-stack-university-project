@@ -13,43 +13,43 @@ const auth = (...requiredRoles: TUserRole[]) => {
    const token = req.headers.authorization
 
   //  checking if token exists
-    if(!token){
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized')
-    }
+  if(!token){
+    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized')
+  }
 
-    // checking valid token
-    const decoded =  jwt.verify(token, config.jwt_access_secret as string) as JwtPayload
-    const { role, userId, iat } = decoded
-    const user = await User.isUserExistsByCustomId(userId);
-    // checking user
-    if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-    }
-  
-    // checking if user is deleted
-    const isDeletedUser = user?.isDeleted;
-  
-    if (isDeletedUser) {
-      throw new AppError(httpStatus.FORBIDDEN, 'User does not exists');
-    }
-  
-    // // checking user status
-    const userStatus = user?.status;
-  
-    if (userStatus === 'blocked') {
-      throw new AppError(httpStatus.NOT_FOUND, 'This user is blocked');
-    }
+  // checking valid token
+  const decoded =  jwt.verify(token, config.jwt_access_secret as string) as JwtPayload
+  const { role, userId, iat } = decoded
+  const user = await User.isUserExistsByCustomId(userId);
+  // checking user
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
 
-    if(user.passwordChangedAt && (User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number))){
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized')
-    }
+  // checking if user is deleted
+  const isDeletedUser = user?.isDeleted;
 
-    if(requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized')
-    }
+  if (isDeletedUser) {
+    throw new AppError(httpStatus.FORBIDDEN, 'User does not exists');
+  }
 
-    req.user = decoded as JwtPayload;
-    next()
+  // // checking user status
+  const userStatus = user?.status;
+
+  if (userStatus === 'blocked') {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is blocked');
+  }
+
+  if(user.passwordChangedAt && (User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number))){
+    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized')
+  }
+
+  if(requiredRoles && !requiredRoles.includes(role)) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized')
+  }
+
+  req.user = decoded as JwtPayload;
+  next()
 
 })
 
