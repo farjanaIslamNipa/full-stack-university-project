@@ -2,10 +2,10 @@ import httpStatus from 'http-status';
 import { AppError } from '../../error/appError';
 import { User } from '../users/user.model';
 import { TLoginUser } from './auth.interface';
-import jwt, {JwtPayload} from 'jsonwebtoken';
+import {JwtPayload} from 'jsonwebtoken';
 import config from '../../config';
 import bcrypt from 'bcrypt'
-import {createToken} from './auth.utils';
+import {createToken, verifyToken} from './auth.utils';
 import {sendEmail} from '../../utils/sendEmai';
 
 const loginUser = async (payload: TLoginUser) => {
@@ -107,8 +107,7 @@ const changePassword = async (userData: JwtPayload, payload: { oldPassword: stri
 const refreshToken = async (token: string) => {
 
     // checking valid token
-    const decoded =  jwt.verify(token, config.jwt_refresh_secret as string) as JwtPayload
-
+    const decoded =  verifyToken(token, config.jwt_refresh_secret as string)
 
     const { userId, iat } = decoded
     const user = await User.isUserExistsByCustomId(userId);
@@ -213,21 +212,19 @@ const resetPassword = async(payload:{id: string, newPassword: string}, token: st
     throw new AppError(httpStatus.NOT_FOUND, 'This user is blocked');
   }
    // checking valid token
-   const decoded =  jwt.verify(
-    token, 
-    config.jwt_access_secret as string
-    ) as JwtPayload
+   const decoded = verifyToken(token, config.jwt_access_secret as string)
 
     if(payload?.id !== decoded?.userId){
       throw new AppError(httpStatus.FORBIDDEN, 'User forbidden')
     }
+
   // hash new password
   const newHashedPassword = await bcrypt.hash(payload?.newPassword, Number(config.bcrypt_salt_rounds))
 
   await User.findOneAndUpdate({
     id: decoded?.userId,
     role: decoded?.role
-  }, {
+  },{
     password: newHashedPassword,
     needsPasswordChange: false,
     passwordChangedAt: new Date()
