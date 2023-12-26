@@ -7,6 +7,7 @@ import { createFacultyValidationSchema } from '../faculty/faculty.validation';
 import { createAdminValidationSchema } from '../admin/admin.validation';
 import auth from '../../middleware/auth';
 import {USER_ROLE} from './user.constant';
+import {UserValidation} from './user.validation';
 
 
 
@@ -33,6 +34,15 @@ router.post(
     validateRequest(createAdminValidationSchema),
     UserControllers.createAdmin
   )
+
+  router.post(
+    '/change-status/:id',
+    auth('admin'),
+    validateRequest(UserValidation.changeStatusValidationSchema),
+    UserControllers.changeStatus
+  )
+
+
 
   router.get(
     '/me',
