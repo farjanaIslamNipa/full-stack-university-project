@@ -90,7 +90,6 @@ const changePassword = async (userData: JwtPayload, payload: { oldPassword: stri
   }
 
   // hash new password
-
   const newHashedPassword = await bcrypt.hash(payload?.newPassword, Number(config.bcrypt_salt_rounds))
 
    await User.findOneAndUpdate({
@@ -193,9 +192,54 @@ const forgetPassword = async(userId: string) => {
   sendEmail( user?.email, resetUILink)
 }
 
+const resetPassword = async(payload:{id: string, newPassword: string}, token: string) => {
+  const user = await User.isUserExistsByCustomId(payload?.id);
+  // checking user
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  // checking if user is deleted
+  const isDeletedUser = user?.isDeleted;
+
+  if (isDeletedUser) {
+    throw new AppError(httpStatus.FORBIDDEN, 'User does not exists');
+  }
+
+  // // checking user status
+  const userStatus = user?.status;
+
+  if (userStatus === 'blocked') {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is blocked');
+  }
+   // checking valid token
+   const decoded =  jwt.verify(
+    token, 
+    config.jwt_access_secret as string
+    ) as JwtPayload
+
+    if(payload?.id !== decoded?.userId){
+      throw new AppError(httpStatus.FORBIDDEN, 'User forbidden')
+    }
+  // hash new password
+  const newHashedPassword = await bcrypt.hash(payload?.newPassword, Number(config.bcrypt_salt_rounds))
+
+  await User.findOneAndUpdate({
+    id: decoded?.userId,
+    role: decoded?.role
+  }, {
+    password: newHashedPassword,
+    needsPasswordChange: false,
+    passwordChangedAt: new Date()
+  })
+
+
+}
+
 export const AuthServices = {
   loginUser,
   changePassword,
   refreshToken,
-  forgetPassword
+  forgetPassword,
+  resetPassword
 };
