@@ -6,7 +6,7 @@ import {JwtPayload} from 'jsonwebtoken';
 import config from '../../config';
 import bcrypt from 'bcrypt'
 import {createToken, verifyToken} from './auth.utils';
-import {sendEmail} from '../../utils/sendEmai';
+import {sendEmail} from '../../utils/sendEmail';
 
 const loginUser = async (payload: TLoginUser) => {
   const user = await User.isUserExistsByCustomId(payload.id);
