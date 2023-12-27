@@ -2,13 +2,11 @@ import { UserService } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
-import {AppError} from "../../error/appError";
 
 const createStudent = catchAsync(async (req, res) => {
-
     const { password, student:studentData} = req.body;
     // calling service function to send data
-    const result = await UserService.createStudentIntoDB(password, studentData);
+    const result = await UserService.createStudentIntoDB(req.file, password, studentData);
 
     // sending data to client
   sendResponse(res, {
@@ -56,6 +54,7 @@ const getMe = catchAsync(async(req, res) => {
 });
 
 const changeStatus = catchAsync(async(req, res) => {
+
   const id = req.params.id
   const result = await UserService.changeStatus(id, req.body)
 
